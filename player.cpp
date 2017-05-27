@@ -35,3 +35,14 @@ void Player::Move(float accel_x, float accel_y) {
     y = new_y;
   }
 }
+
+Bullet Player::EmitBullet() {
+
+  Bullet b;
+  b.x = x + SHAPE_W / 2;
+  b.y = y;
+  b.m_x = 0;
+  b.m_y = BULLET_SPEED;
+
+  return b;
+}

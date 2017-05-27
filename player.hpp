@@ -14,7 +14,7 @@ class Player {
     Player(int _x, int _y);
     
     void Move(float accel_x, float accel_y);
-    Pixel* GetPixels();
+    Bullet EmitBullet();
 
     Pixel shape[SHAPE_SIZE] = {
       { 9, 27 }, { 10, 27 }, { 11, 27 }, { 12, 27 }, { 13, 27 }, { 14, 27 }, { 15, 27 }, {16, 27 }, {17, 27}, {18, 27}, { 19, 27},
@@ -49,5 +49,6 @@ class Player {
   private:
     static const int MAX_X = 128;
     static const int MAX_Y = 128;
+    static const int BULLET_SPEED = -5;
  
 };
