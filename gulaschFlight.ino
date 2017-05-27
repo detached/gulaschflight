@@ -10,6 +10,7 @@
 
 #include "api.hpp"
 #include "player.hpp"
+#include "enemy.hpp"
 
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
@@ -35,6 +36,11 @@ float accel_y;
 Player player(70, 70);
 std::vector<Bullet> p_bullets;
 
+std::vector<Enemy> enemies;
+int enemy_count = 3;
+
+long tick;
+
 void setup() {
   badge.init();
   badge.setBacklight(true);
@@ -46,16 +52,48 @@ void setup() {
   SPIFFS.begin();
   File f = SPIFFS.open("/rom"+String(rboot_config.current_rom),"w");
   f.println("GPNFlight\n");
+
+  tick = 0;
 }
 
 void loop() {
+  tick++;
 
   updatePlayer();
   updateBullets();
-  
+
+  generateEnemies();
+  updateEnemies();
+   
   draw();
   
   delay(10);
+}
+
+void generateEnemies() {
+
+  if (enemies.size() < enemy_count && tick % 50 == 0) {
+    int x = rand() % tft_max;
+    int y = 0;
+    Enemy enemy(x, y);
+    enemies.push_back(enemy);
+  }  
+}
+
+void updateEnemies() {
+  
+ for (std::vector<Enemy>::iterator it = enemies.begin(); it != enemies.end();) {
+    
+    Enemy& e = *it;
+
+    e.Move();
+    
+    if (e.y > tft_max) {
+      it = enemies.erase(it);
+    } else {
+      ++it;
+    }
+  }   
 }
 
 void updatePlayer() {
@@ -102,5 +140,15 @@ void draw() {
     tft.writePixel(b.x, b.y, RED);
   } 
   
+  for (std::vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); ++it) {
+
+    Enemy& e = *it;
+
+    for (int i = 0; i < e.SHAPE_SIZE; i++) {
+      Pixel p = e.shape[i];
+      tft.writePixel(p.x + e.x, p.y + e.y, BLUE);
+    }
+  } 
+
   tft.writeFramebuffer();
 }
