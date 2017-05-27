@@ -6,24 +6,20 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 
+#include "api.hpp"
+#include "player.hpp"
+
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
 Adafruit_BNO055 bno = Adafruit_BNO055(BNO055_ID, BNO055_ADDRESS_B);
 
 Badge badge;
 
-int player_x = 70;
-int player_y = 70;
-
-int player_s = 20;
-
-int max_x = 128;
-int max_y = 128;
-
 imu::Vector<3> euler;
-
 float accel_x;
 float accel_y;
+
+Player player(70, 70);
 
 void setup() {
   badge.init();
@@ -42,9 +38,9 @@ void loop() {
 
   calcPlayerMovement();
   
-  drawPlayer();
+  draw();
   
-  delay(50);
+  delay(10);
 }
 
 void calcPlayerMovement() {
@@ -52,36 +48,16 @@ void calcPlayerMovement() {
   accel_x = euler.x();
   accel_y = euler.y();
 
-  int new_x = player_x;
-  int new_y = player_y;
-  
-  if (accel_x > 1) {
-      new_x = player_x + (int) accel_x;
-  }
-  
-  if (accel_x < -1) {
-      new_x = player_x + (int) accel_x;
-  }
-
-  if (new_x > 0 && new_x < max_x - player_s) {
-    player_x = new_x;
-  }
-
-  if (accel_y > 1) {
-      new_y = player_y - (int) accel_y;
-  }
-  
-  if (accel_y < -1) {
-      new_y = player_y - (int) accel_y;
-  }
-
-  if (new_y > 0 && new_y < max_y - player_s) {
-    player_y = new_y;  
-  }
+  player.Move(accel_x, accel_y);
 }
 
-void drawPlayer() {
+void draw() {
   tft.fillScreen(BLACK);
-  tft.drawRect(player_x, player_y, player_s, player_s, WHITE);
+
+  for (int i = 0; i < player.SHAPE_SIZE; i++) {
+    Pixel p = player.shape[i];
+    tft.writePixel(p.x + player.x, p.y + player.y, WHITE);
+  }
+  
   tft.writeFramebuffer();
 }
