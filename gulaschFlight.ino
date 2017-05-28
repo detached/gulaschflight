@@ -127,29 +127,35 @@ void updatePlayer() {
 
 void updateBullets() { 
   
-  for (std::vector<Bullet>::iterator it = p_bullets.begin(); it != p_bullets.end();) {
+  for (std::vector<Bullet>::iterator bIt = p_bullets.begin(); bIt != p_bullets.end();) {
     
-    Bullet& b = *it;
+    Bullet& b = *bIt;
     b.x = b.x + b.m_x;
     b.y = b.y + b.m_y;
 
     if ((b.x > TFT_MAX || b.x < 0) || (b.y > TFT_MAX || b.y < 0)) {
-      it = p_bullets.erase(it);
+      bIt = p_bullets.erase(bIt);
     } else {
 
-      
-       for (std::vector<Enemy>::iterator it = enemies.begin(); it != enemies.end();) {
+       bool bulletRemoved = false;
+
+       for (std::vector<Enemy>::iterator eIt = enemies.begin(); eIt != enemies.end();) {
     
-         Enemy& e = *it;
+         Enemy& e = *eIt;
          
          if ((b.x > e.x && b.x < e.x + Enemy::SHAPE_W) && b.y < e.y) {
-           it = enemies.erase(it);
+           eIt = enemies.erase(eIt);
+           bIt = p_bullets.erase(bIt);
+           bulletRemoved = true;
+           break;
          } else {
-           ++it;
+           ++eIt;
          }
        }
       
-      ++it;
+      if (!bulletRemoved) {
+        ++bIt;
+      }
     }
   }
   
