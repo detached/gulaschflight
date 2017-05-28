@@ -41,7 +41,9 @@ const int enemyCount = 3;
 
 long tick;
 
-bool gameOver = false;
+bool gameOver;
+
+int score;
 
 void setup() {
   badge.init();
@@ -55,7 +57,19 @@ void setup() {
   File f = SPIFFS.open("/rom"+String(rboot_config.current_rom),"w");
   f.println("GPNFlight\n");
 
+  tft.setTextSize(1);
+  tft.setTextColor(WHITE);
+
+  reset();
+}
+
+void reset() {
+  enemies.clear();
+  p_bullets.clear();
   tick = 0;
+  lastBulletTick = 0;
+  score = 0;
+  gameOver = false;  
 }
 
 void loop() {
@@ -80,10 +94,11 @@ void loop() {
 void printGameOver() {
   
   tft.fillScreen(BLACK);
-  tft.setTextSize(1);
-  tft.setTextColor(WHITE);
+ 
+  drawScore();
+  
   tft.setCursor(35, 60); 
-  tft.println("Game Over!");   
+  tft.println("Game Over!");
   tft.writeFramebuffer();
 }
 
@@ -147,6 +162,7 @@ void updateBullets() {
            eIt = enemies.erase(eIt);
            bIt = p_bullets.erase(bIt);
            bulletRemoved = true;
+           score++;
            break;
          } else {
            ++eIt;
@@ -169,6 +185,8 @@ void updateBullets() {
 void draw() {
   tft.fillScreen(BLACK);
 
+  drawScore();
+  
   for (int i = 0; i < Player::SHAPE_SIZE; i++) {
     Pixel p = Player::SHAPE[i];
     tft.writePixel(p.x + player.x, p.y + player.y, WHITE);
@@ -188,7 +206,14 @@ void draw() {
       Pixel p = Enemy::SHAPE[i];
       tft.writePixel(p.x + e.x, p.y + e.y, BLUE);
     }
-  } 
-  
+  }
+
   tft.writeFramebuffer();
+}
+
+void drawScore() {
+   
+  tft.setCursor(2, 0);
+  tft.print("Score: ");
+  tft.print(score);
 }
