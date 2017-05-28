@@ -138,6 +138,19 @@ void updateBullets() {
     if ((b.x > TFT_MAX || b.x < 0) || (b.y > TFT_MAX || b.y < 0)) {
       it = p_bullets.erase(it);
     } else {
+
+      
+       for (std::vector<Enemy>::iterator it = enemies.begin(); it != enemies.end();) {
+    
+         Enemy& e = *it;
+         
+         if ((b.x > e.x && b.x < e.x + Enemy::SHAPE_W) && b.y < e.y) {
+           it = enemies.erase(it);
+         } else {
+           ++it;
+         }
+       }
+      
       ++it;
     }
   }
