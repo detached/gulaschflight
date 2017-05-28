@@ -1,4 +1,5 @@
 #include <GPNBadge.hpp>
+
 #include <FS.h>
 #include "rboot.h"
 #include "rboot-api.h"
@@ -30,8 +31,6 @@ Badge badge;
 int tft_max = 128;
 
 imu::Vector<3> euler;
-float accel_x;
-float accel_y;
 
 Player player(70, 70);
 std::vector<Bullet> p_bullets;
@@ -40,6 +39,9 @@ std::vector<Enemy> enemies;
 int enemy_count = 3;
 
 long tick;
+
+bool game_over = false;
+bool game_end = false;
 
 void setup() {
   badge.init();
@@ -57,17 +59,36 @@ void setup() {
 }
 
 void loop() {
-  tick++;
 
-  updatePlayer();
-  updateBullets();
+  if (game_over) {
 
-  generateEnemies();
-  updateEnemies();
-   
-  draw();
+    printGameOver();
+  } else {
   
-  delay(10);
+    tick++;
+
+    updatePlayer();
+    updateBullets();
+
+    generateEnemies();
+    updateEnemies();
+   
+    draw();
+  }
+}
+
+void printGameOver() {
+  
+  if (!game_end) {
+    tft.fillScreen(BLACK);
+    tft.setTextSize(1);
+    tft.setTextColor(WHITE);
+    tft.setCursor(35, 60); 
+    tft.println("Game Over!");   
+    tft.writeFramebuffer();
+    
+    game_end = true; 
+  }
 }
 
 void generateEnemies() {
@@ -87,6 +108,12 @@ void updateEnemies() {
     Enemy& e = *it;
 
     e.Move();
+
+    if ((e.y + Enemy::SHAPE_H > player.y && e.y < player.y + Player::SHAPE_H) && 
+          ((e.x > player.x && e.x < player.x + Player::SHAPE_W) || (e.x + Enemy::SHAPE_W > player.x && e.x < player.x + Player::SHAPE_W))) {
+
+      game_over = true;
+    }
     
     if (e.y > tft_max) {
       it = enemies.erase(it);
@@ -97,15 +124,12 @@ void updateEnemies() {
 }
 
 void updatePlayer() {
-  euler = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-  accel_x = euler.x();
-  accel_y = euler.y();
 
-  player.Move(accel_x, accel_y);   
+  euler = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  player.Move(euler.x(), euler.y());   
 }
 
-void updateBullets() {
- 
+void updateBullets() { 
   
   for (std::vector<Bullet>::iterator it = p_bullets.begin(); it != p_bullets.end();) {
     
@@ -129,8 +153,8 @@ void updateBullets() {
 void draw() {
   tft.fillScreen(BLACK);
 
-  for (int i = 0; i < player.SHAPE_SIZE; i++) {
-    Pixel p = player.shape[i];
+  for (int i = 0; i < Player::SHAPE_SIZE; i++) {
+    Pixel p = Player::SHAPE[i];
     tft.writePixel(p.x + player.x, p.y + player.y, WHITE);
   }
 
@@ -144,11 +168,11 @@ void draw() {
 
     Enemy& e = *it;
 
-    for (int i = 0; i < e.SHAPE_SIZE; i++) {
-      Pixel p = e.shape[i];
+    for (int i = 0; i < Enemy::SHAPE_SIZE; i++) {
+      Pixel p = Enemy::SHAPE[i];
       tft.writePixel(p.x + e.x, p.y + e.y, BLUE);
     }
   } 
-
+  
   tft.writeFramebuffer();
 }
