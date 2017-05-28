@@ -1,4 +1,3 @@
-
 #include "player.hpp"
 
 const Pixel Player::SHAPE[] = {
@@ -49,7 +48,7 @@ void Player::Move(float accel_x, float accel_y) {
     new_x = x + (int) accel_x;
   }
 
-  if (new_x > 0 && new_x < MAX_X - SHAPE_W) {
+  if (new_x > 0 && new_x < TFT_MAX - SHAPE_W) {
     x = new_x;
   }
 
@@ -61,7 +60,7 @@ void Player::Move(float accel_x, float accel_y) {
     new_y = y - (int) accel_y;
   }
 
-  if (new_y > 0 && new_y < MAX_Y - SHAPE_H) {
+  if (new_y > 0 && new_y < TFT_MAX - SHAPE_H) {
     y = new_y;
   }
 }

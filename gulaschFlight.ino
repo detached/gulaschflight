@@ -28,8 +28,6 @@ Adafruit_BNO055 bno = Adafruit_BNO055(BNO055_ID, BNO055_ADDRESS_B);
 
 Badge badge;
 
-int tft_max = 128;
-
 imu::Vector<3> euler;
 
 Player player(70, 70);
@@ -94,7 +92,7 @@ void printGameOver() {
 void generateEnemies() {
 
   if (enemies.size() < enemy_count && tick % 50 == 0) {
-    int x = rand() % tft_max;
+    int x = rand() % TFT_MAX;
     int y = 0;
     Enemy enemy(x, y);
     enemies.push_back(enemy);
@@ -115,7 +113,7 @@ void updateEnemies() {
       game_over = true;
     }
     
-    if (e.y > tft_max) {
+    if (e.y > TFT_MAX) {
       it = enemies.erase(it);
     } else {
       ++it;
@@ -137,7 +135,7 @@ void updateBullets() {
     b.x = b.x + b.m_x;
     b.y = b.y + b.m_y;
 
-    if ((b.x > tft_max || b.x < 0) || (b.y > tft_max || b.y < 0)) {
+    if ((b.x > TFT_MAX || b.x < 0) || (b.y > TFT_MAX || b.y < 0)) {
       it = p_bullets.erase(it);
     } else {
       ++it;

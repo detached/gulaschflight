@@ -19,8 +19,6 @@ class Player {
     Bullet EmitBullet();
   
   private:
-    static const int MAX_X = 128;
-    static const int MAX_Y = 128;
     static const int BULLET_SPEED = -5; 
 };
 

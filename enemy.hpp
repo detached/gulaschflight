@@ -18,8 +18,6 @@ class Enemy {
     void Move();
     Bullet EmitBullet();
   private:
-    static const int MAX_X = 128;
-    static const int MAX_Y = 128;
     static const int BULLET_SPEED = -5;
 };
 

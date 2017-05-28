@@ -11,3 +11,5 @@ struct Bullet {
   int m_x;
   int m_y;
 };
+
+const int TFT_MAX = 128;
