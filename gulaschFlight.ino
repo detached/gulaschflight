@@ -31,15 +31,17 @@ Badge badge;
 imu::Vector<3> euler;
 
 Player player(70, 70);
+
 std::vector<Bullet> p_bullets;
+long lastBulletTick = 0;
+const long ticksPerBullet = 20;
 
 std::vector<Enemy> enemies;
-int enemy_count = 3;
+const int enemyCount = 3;
 
 long tick;
 
-bool game_over = false;
-bool game_end = false;
+bool gameOver = false;
 
 void setup() {
   badge.init();
@@ -58,7 +60,7 @@ void setup() {
 
 void loop() {
 
-  if (game_over) {
+  if (gameOver) {
 
     printGameOver();
   } else {
@@ -77,21 +79,17 @@ void loop() {
 
 void printGameOver() {
   
-  if (!game_end) {
-    tft.fillScreen(BLACK);
-    tft.setTextSize(1);
-    tft.setTextColor(WHITE);
-    tft.setCursor(35, 60); 
-    tft.println("Game Over!");   
-    tft.writeFramebuffer();
-    
-    game_end = true; 
-  }
+  tft.fillScreen(BLACK);
+  tft.setTextSize(1);
+  tft.setTextColor(WHITE);
+  tft.setCursor(35, 60); 
+  tft.println("Game Over!");   
+  tft.writeFramebuffer();
 }
 
 void generateEnemies() {
 
-  if (enemies.size() < enemy_count && tick % 50 == 0) {
+  if (enemies.size() < enemyCount && tick % 50 == 0) {
     int x = rand() % TFT_MAX;
     int y = 0;
     Enemy enemy(x, y);
@@ -110,7 +108,7 @@ void updateEnemies() {
     if ((e.y + Enemy::SHAPE_H > player.y && e.y < player.y + Player::SHAPE_H) && 
           ((e.x > player.x && e.x < player.x + Player::SHAPE_W) || (e.x + Enemy::SHAPE_W > player.x && e.x < player.x + Player::SHAPE_W))) {
 
-      game_over = true;
+      gameOver = true;
     }
     
     if (e.y > TFT_MAX) {
@@ -155,9 +153,10 @@ void updateBullets() {
     }
   }
   
-  if (badge.getJoystickState() == JoystickState::BTN_ENTER) {
+  if (badge.getJoystickState() == JoystickState::BTN_ENTER && lastBulletTick + ticksPerBullet < tick) {
     Bullet b = player.EmitBullet();
     p_bullets.push_back(b);
+    lastBulletTick = tick;
   }
 }
 
