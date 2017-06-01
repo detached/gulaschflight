@@ -5,9 +5,9 @@
 class Player {
 
   public:
-    static const int SHAPE_SIZE = 133;
-    static const int SHAPE_W = 27;
-    static const int SHAPE_H = 27;
+    static const int SHAPE_SIZE = 375;
+    static const int SHAPE_W = 32;
+    static const int SHAPE_H = 25;
     static const Pixel SHAPE[];
 
     int x;

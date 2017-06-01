@@ -189,7 +189,7 @@ void draw() {
   
   for (int i = 0; i < Player::SHAPE_SIZE; i++) {
     Pixel p = Player::SHAPE[i];
-    tft.writePixel(p.x + player.x, p.y + player.y, WHITE);
+    tft.writePixel(p.x + player.x, p.y + player.y, p.color);
   }
 
   for (std::vector<Bullet>::iterator it = p_bullets.begin(); it != p_bullets.end(); ++it) {
@@ -204,7 +204,7 @@ void draw() {
 
     for (int i = 0; i < Enemy::SHAPE_SIZE; i++) {
       Pixel p = Enemy::SHAPE[i];
-      tft.writePixel(p.x + e.x, p.y + e.y, BLUE);
+      tft.writePixel(p.x + e.x, p.y + e.y, p.color);
     }
   }
 

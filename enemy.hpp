@@ -5,9 +5,9 @@
 class Enemy {
 
   public:
-    static const int SHAPE_SIZE = 64;
-    static const int SHAPE_W = 13;
-    static const int SHAPE_H = 13;
+    static const int SHAPE_SIZE = 140;
+    static const int SHAPE_W = 15;
+    static const int SHAPE_H = 20;
     static const Pixel SHAPE[];
    
     int x;
