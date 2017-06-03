@@ -11,17 +11,18 @@
 
 //#define DEBUG false
 
+#define TFT_MAX 128
+
 struct Pixel {
-  int x;
-  int y;
-  int color;
+  char x;
+  char y;
+  short int color;
 };
 
 struct Bullet {
-  int x;
-  int y;
-  int m_x;
-  int m_y;
+  char x;
+  char y;
+  char m_x;
+  char m_y;
 };
 
-const int TFT_MAX = 128;
