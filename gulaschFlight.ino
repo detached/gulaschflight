@@ -96,9 +96,8 @@ void printGameOver() {
 void generateEnemies() {
 
   if (enemies.size() < enemyCount && tick % 50 == 0) {
-    int x = rand() % TFT_MAX;
-    int y = 0;
-    Enemy enemy(x, y);
+    int x = rand() % (TFT_MAX - Enemy::SHAPE_W * 2 + 1) + Enemy::SHAPE_W;
+    Enemy enemy(x, 0);
     enemies.push_back(enemy);
   }  
 }
