@@ -12,6 +12,7 @@
 #include "api.hpp"
 #include "player.hpp"
 #include "enemy.hpp"
+#include "background.hpp"
 
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
@@ -49,7 +50,7 @@ void setup() {
   f.println("GPNFlight\n");
 
   tft.setTextSize(1);
-  tft.setTextColor(WHITE);
+  tft.setTextColor(BLACK);
 
   reset();
 }
@@ -83,8 +84,7 @@ void loop() {
 }
 
 void printGameOver() {
-  
-  tft.fillScreen(BLACK);
+  drawBackground();
  
   drawScore();
   
@@ -174,7 +174,7 @@ void updateBullets() {
 }
 
 void draw() {
-  tft.fillScreen(BLACK);
+  drawBackground();
 
   drawScore();
 
@@ -200,4 +200,17 @@ void drawScore() {
   tft.setCursor(2, 0);
   tft.print("Score: ");
   tft.print(score);
+}
+
+void drawBackground() {
+
+  char i = 200;
+  
+  for (int y = 0; y < TFT_MAX; y++) {
+    tft.drawFastHLine(0, y, TFT_MAX, tft.Color565(i, i + 20, 255));
+
+    if (y % 5 == 0) {
+      i -= 3;
+    }
+  }
 }
