@@ -31,7 +31,7 @@ long lastBulletTick = 0;
 const long ticksPerBullet = 20;
 
 std::vector<Enemy> enemies;
-const int enemyCount = 3;
+int enemyCount = 3;
 
 long tick;
 
@@ -39,7 +39,9 @@ bool gameOver;
 
 int score;
 
-short int led_brightness = 0;
+short int level = 1;
+
+short int ledBrightness = 0;
 
 void setup() {
   badge.init();
@@ -65,6 +67,7 @@ void reset() {
   tick = 0;
   lastBulletTick = 0;
   score = 0;
+  level = 0;
   gameOver = false;  
 }
 
@@ -85,7 +88,7 @@ void loop() {
 
     generateEnemies();
     updateEnemies();
-   
+
     draw();
   }
 }
@@ -94,7 +97,7 @@ void printGameOver() {
   
   drawBackground();
  
-  drawScore();
+  drawStatus();
   
   tft.setCursor(35, 60); 
   tft.println("Game Over!");
@@ -109,7 +112,7 @@ void printGameOver() {
 
 void generateEnemies() {
 
-  if (enemies.size() < enemyCount && tick % 50 == 0) {
+  if (enemies.size() < enemyCount && tick % 55 - level * 5  == 0) {
     int x = rand() % (TFT_MAX - Enemy::SHAPE_W * 2 + 1) + Enemy::SHAPE_W;
     Enemy enemy(x, 0);
     enemies.push_back(enemy);
@@ -147,8 +150,8 @@ void gameOverFx() {
 }
 
 void hitFx() {
-  led_brightness = LED_MAX_BRIGHT;
-  pixels.setBrightness(led_brightness);
+  ledBrightness = LED_MAX_BRIGHT;
+  pixels.setBrightness(ledBrightness);
   pixels.setPixelColor(0, 255, 0, 0);
   pixels.setPixelColor(1, 255, 0, 0);
   pixels.setPixelColor(2, 255, 0, 0);
@@ -157,18 +160,27 @@ void hitFx() {
 }
 
 void updateFx() {
-  if (led_brightness > 0) {
-    led_brightness -= 5;
-    pixels.setBrightness(led_brightness);
+  if (ledBrightness > 0) {
+    ledBrightness -= 5;
+    pixels.setBrightness(ledBrightness);
     pixels.show(); 
   }
-  
 }
 
 void updatePlayer() {
 
   euler = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
   player.Move(euler.x(), euler.y());   
+}
+
+void increaseScore() {
+
+  score++;  
+
+  if (score % 10 == 0) {
+    level++;
+    enemyCount++;
+  }
 }
 
 void updateBullets() { 
@@ -193,7 +205,7 @@ void updateBullets() {
            eIt = enemies.erase(eIt);
            bIt = p_bullets.erase(bIt);
            bulletRemoved = true;
-           score++;
+           increaseScore();
            hitFx();
            break;
          } else {
@@ -217,7 +229,7 @@ void updateBullets() {
 void draw() {
   drawBackground();
 
-  drawScore();
+  drawStatus();
 
   player.Draw(tft);
 
@@ -236,11 +248,15 @@ void draw() {
   tft.writeFramebuffer();
 }
 
-void drawScore() {
+void drawStatus() {
    
   tft.setCursor(2, 1);
   tft.print("Score: ");
   tft.print(score);
+  
+  tft.setCursor(70, 1);
+  tft.print("Level: ");
+  tft.print(level);
 }
 
 void drawBackground() {
