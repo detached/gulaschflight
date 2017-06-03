@@ -1,5 +1,6 @@
 #pragma once
 
+#include <TFT_ILI9163C.h>
 #include "api.hpp"
 
 class Player {
@@ -16,6 +17,7 @@ class Player {
     Player(int _x, int _y);
     
     void Move(float accel_x, float accel_y);
+    void Draw(TFT_ILI9163C tft);
     Bullet EmitBullet();
   
   private:

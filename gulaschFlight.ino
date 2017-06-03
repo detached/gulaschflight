@@ -15,15 +15,6 @@
 
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
-#define BLACK   0x0000
-#define BLUE    0x001F
-#define RED     0xF800
-#define GREEN   0x07E0
-#define CYAN    0x07FF
-#define MAGENTA 0xF81F
-#define YELLOW  0xFFE0
-#define WHITE   0xFFFF
-
 Adafruit_BNO055 bno = Adafruit_BNO055(BNO055_ID, BNO055_ADDRESS_B);
 
 Badge badge;
@@ -186,11 +177,8 @@ void draw() {
   tft.fillScreen(BLACK);
 
   drawScore();
-  
-  for (int i = 0; i < Player::SHAPE_SIZE; i++) {
-    Pixel p = Player::SHAPE[i];
-    tft.writePixel(p.x + player.x, p.y + player.y, p.color);
-  }
+
+  player.Draw(tft);
 
   for (std::vector<Bullet>::iterator it = p_bullets.begin(); it != p_bullets.end(); ++it) {
     
@@ -201,11 +189,7 @@ void draw() {
   for (std::vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); ++it) {
 
     Enemy& e = *it;
-
-    for (int i = 0; i < Enemy::SHAPE_SIZE; i++) {
-      Pixel p = Enemy::SHAPE[i];
-      tft.writePixel(p.x + e.x, p.y + e.y, p.color);
-    }
+    e.Draw(tft);
   }
 
   tft.writeFramebuffer();

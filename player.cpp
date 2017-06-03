@@ -72,3 +72,15 @@ Bullet Player::EmitBullet() {
 
   return b;
 }
+
+void Player::Draw(TFT_ILI9163C tft) {
+  
+  for (int i = 0; i < Player::SHAPE_SIZE; i++) {
+    Pixel p = Player::SHAPE[i];
+    tft.writePixel(p.x + x, p.y + y, p.color);
+  }
+
+#ifdef DEBUG
+  tft.drawRect(x, y, Player::SHAPE_W, Player::SHAPE_H, GREEN);
+#endif
+}

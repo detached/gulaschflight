@@ -26,3 +26,15 @@ Enemy::Enemy(int _x, int _y) {
 void Enemy::Move() {
   y = y + 1;
 }
+
+void Enemy::Draw(TFT_ILI9163C tft) {
+  
+    for (int i = 0; i < Enemy::SHAPE_SIZE; i++) {
+      Pixel p = Enemy::SHAPE[i];
+      tft.writePixel(p.x + x, p.y + y, p.color);
+    }
+
+#ifdef DEBUG
+    tft.drawRect(x, y, Enemy::SHAPE_W, Enemy::SHAPE_H, GREEN);
+#endif
+}
