@@ -12,7 +12,6 @@
 #include "api.hpp"
 #include "player.hpp"
 #include "enemy.hpp"
-#include "background.hpp"
 
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
