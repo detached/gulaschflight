@@ -16,6 +16,8 @@
 
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
+#define LED_MAX_BRIGHT 50
+
 Adafruit_BNO055 bno = Adafruit_BNO055(BNO055_ID, BNO055_ADDRESS_B);
 
 Badge badge;
@@ -37,6 +39,8 @@ bool gameOver;
 
 int score;
 
+short int led_brightness = 0;
+
 void setup() {
   badge.init();
   badge.setBacklight(true);
@@ -51,7 +55,7 @@ void setup() {
 
   tft.setTextSize(1);
   tft.setTextColor(BLACK);
-
+  
   reset();
 }
 
@@ -65,6 +69,8 @@ void reset() {
 }
 
 void loop() {
+
+  updateFx();
 
   if (gameOver) {
 
@@ -120,7 +126,8 @@ void updateEnemies() {
 
     if ((e.y + Enemy::SHAPE_H > player.y && e.y < player.y + Player::SHAPE_H) && 
           ((e.x > player.x && e.x < player.x + Player::SHAPE_W) || (e.x + Enemy::SHAPE_W > player.x && e.x < player.x + Player::SHAPE_W))) {
-
+      
+      gameOverFx();
       gameOver = true;
     }
     
@@ -130,6 +137,32 @@ void updateEnemies() {
       ++it;
     }
   }   
+}
+
+void gameOverFx() {
+  hitFx();
+  badge.setVibrator(true);
+  delay(100);
+  badge.setVibrator(false);
+}
+
+void hitFx() {
+  led_brightness = LED_MAX_BRIGHT;
+  pixels.setBrightness(led_brightness);
+  pixels.setPixelColor(0, 255, 0, 0);
+  pixels.setPixelColor(1, 255, 0, 0);
+  pixels.setPixelColor(2, 255, 0, 0);
+  pixels.setPixelColor(3, 255, 0, 0);
+  pixels.show(); 
+}
+
+void updateFx() {
+  if (led_brightness > 0) {
+    led_brightness -= 5;
+    pixels.setBrightness(led_brightness);
+    pixels.show(); 
+  }
+  
 }
 
 void updatePlayer() {
@@ -161,6 +194,7 @@ void updateBullets() {
            bIt = p_bullets.erase(bIt);
            bulletRemoved = true;
            score++;
+           hitFx();
            break;
          } else {
            ++eIt;
