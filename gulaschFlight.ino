@@ -69,6 +69,7 @@ void loop() {
   if (gameOver) {
 
     printGameOver();
+    
   } else {
   
     tick++;
@@ -84,13 +85,20 @@ void loop() {
 }
 
 void printGameOver() {
+  
   drawBackground();
  
   drawScore();
   
   tft.setCursor(35, 60); 
   tft.println("Game Over!");
+  tft.setCursor(32, 110);
+  tft.println("Press ENTER");
   tft.writeFramebuffer();
+
+  if (badge.getJoystickState() == JoystickState::BTN_ENTER) {
+    reset();
+  }
 }
 
 void generateEnemies() {
