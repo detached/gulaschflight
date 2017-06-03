@@ -197,7 +197,7 @@ void draw() {
 
 void drawScore() {
    
-  tft.setCursor(2, 0);
+  tft.setCursor(2, 1);
   tft.print("Score: ");
   tft.print(score);
 }
